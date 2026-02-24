@@ -14,6 +14,6 @@ module org.example.firstlabasyncshop {
 
     opens org.example.firstlabasyncshop to javafx.fxml;
     exports org.example.firstlabasyncshop;
-    exports org.example.firstlabasyncshop.ref;
-    opens org.example.firstlabasyncshop.ref to javafx.fxml;
+//    exports org.example.firstlabasyncshop.ref;
+//    opens org.example.firstlabasyncshop.ref to javafx.fxml;
 }

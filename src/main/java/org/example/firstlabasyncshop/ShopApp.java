@@ -6,9 +6,10 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -17,25 +18,26 @@ import java.util.List;
 
 public class ShopApp extends Application {
     private double fishY = 500;
-    private double fishXOne = 300;
-    private double fishXTwo = 700;
-    private double fishXThree = 1100;
+    private double fishXOne = 260;
+    private double fishXTwo = 660;
+    private double fishXThree = 1060;
     @Override
     public void start(Stage stage) {
         Ship shipOne = new Ship(230, 150, 200, 3);
         Ship shipTwo = new Ship(230, 150, 600, 10);
         Ship shipThree = new Ship(230, 150, 1000, 1);
+        Image image = new Image(getClass().getResourceAsStream("/ryba.png"));
 
-        Circle fishOne = createFish(fishXOne);
-        Circle fishTwo = createFish(fishXTwo);
-        Circle fishThree = createFish(fishXThree);
+        ImageView fishOne = createFish(fishXOne, image);
+        ImageView fishTwo = createFish(fishXTwo, image);
+        ImageView fishThree = createFish(fishXThree, image);
 
         List<Ship> ships = new ArrayList<>();
         ships.add(shipOne);
         ships.add(shipTwo);
         ships.add(shipThree);
 
-        List<Circle> fishes = new ArrayList<>();
+        List<ImageView> fishes = new ArrayList<>();
         fishes.add(fishOne);
         fishes.add(fishTwo);
         fishes.add(fishThree);
@@ -53,7 +55,7 @@ public class ShopApp extends Application {
             timelineADD.play();
         }
 
-        for(Circle fish : fishes) {
+        for(ImageView fish : fishes) {
             Timeline timelineFish = new Timeline(new KeyFrame(Duration.seconds(5), event -> fishEats(ships, fish)));
             timelineFish.setCycleCount(Timeline.INDEFINITE);
             timelineFish.play();
@@ -63,16 +65,16 @@ public class ShopApp extends Application {
         stage.show();
     }
 
-    private Circle createFish(double x) {
-        Circle circle = new Circle();
-        circle.setFill(Color.BLUE);
-        circle.setRadius(25);
-        circle.setCenterY(fishY);
-        circle.setCenterX(x);
-        return circle;
+    private ImageView createFish(double x, Image image) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(100);
+        imageView.setX(x);
+        imageView.setY(fishY);
+        return imageView;
     }
 
-    private void fishEats(List<Ship> ships, Circle fish) {
+    private void fishEats(List<Ship> ships, ImageView fish) {
         for (Ship ship : ships) {
             if (ship.getBoxes() > 0 && !ship.isBusy()) {
                 ship.setBusy(true);
@@ -80,8 +82,10 @@ public class ShopApp extends Application {
                 double startTranslateX = fish.getTranslateX();
                 double startTranslateY = fish.getTranslateY();
 
-                double targetTranslateX = ship.getVBoxX() - fish.getCenterX() + 150;
-                double targetTranslateY = ship.getVBoxY() - fish.getCenterY() + 250;
+                double targetTranslateX = -(fish.getX() - ship.getVBoxX() - 50);
+                double targetTranslateY = -(fish.getY() - ship.getVBoxY() - 250);
+                System.out.println(startTranslateX + " " +startTranslateY);
+                System.out.println(targetTranslateX + " " + targetTranslateY);
 
                 TranslateTransition moveToFood = new TranslateTransition(Duration.seconds(2), fish);
                 moveToFood.setToX(targetTranslateX);
