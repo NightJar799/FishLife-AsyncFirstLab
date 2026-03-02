@@ -1,14 +1,9 @@
 package org.example.firstlabasyncshop;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BoxGroup {
     private static final int MAXAMMOUNT = 5;
@@ -16,21 +11,21 @@ public class BoxGroup {
     private int createTime;
     private int capacity = 0;
     private HBox group;
-    private List<Circle> boxes;
     private Node last;
+    private Image image = new Image(getClass().getResourceAsStream("/sweet.png"));
     public BoxGroup (int createTime) {
         this.createTime = createTime;
         group = new HBox();
     }
     public void AddBox(){
         if (capacity < MAXAMMOUNT) {
-            Circle circle = new Circle();
-            circle.setFill(Color.GREEN);
-            circle.setCenterX(50);
-            circle.setCenterY((group.getChildren().size() * 3 + 70) * 10);
-            circle.setRadius(20);
-            last = circle;
-            group.getChildren().add(circle);
+            ImageView sweet = new ImageView(image);
+            sweet.setFitHeight(50);
+            sweet.setFitWidth(50);
+            sweet.setX(50);
+            sweet.setY((group.getChildren().size() * 3 + 70) * 10);
+            last = sweet;
+            group.getChildren().add(sweet);
             capacity++;
         }
     }

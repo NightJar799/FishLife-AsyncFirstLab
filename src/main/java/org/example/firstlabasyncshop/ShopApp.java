@@ -23,9 +23,7 @@ public class ShopApp extends Application {
     private double fishXThree = 1060;
     @Override
     public void start(Stage stage) {
-        Ship shipOne = new Ship(230, 150, 200, 3);
-        Ship shipTwo = new Ship(230, 150, 600, 10);
-        Ship shipThree = new Ship(230, 150, 1000, 1);
+        Ship ship = new Ship(230, 150, 600, 2);
         Image image = new Image(getClass().getResourceAsStream("/ryba.png"));
 
         ImageView fishOne = createFish(fishXOne, image);
@@ -33,32 +31,30 @@ public class ShopApp extends Application {
         ImageView fishThree = createFish(fishXThree, image);
 
         List<Ship> ships = new ArrayList<>();
-        ships.add(shipOne);
-        ships.add(shipTwo);
-        ships.add(shipThree);
+        ships.add(ship);
 
         List<ImageView> fishes = new ArrayList<>();
         fishes.add(fishOne);
         fishes.add(fishTwo);
         fishes.add(fishThree);
 
-        Pane pane = new Pane(shipOne.getTilePane(), shipTwo.getTilePane(), shipThree.getTilePane(),
-                fishOne, fishTwo, fishThree);
+        Pane pane = new Pane(ship.getTilePane(), fishOne, fishTwo, fishThree);
         pane.setStyle("-fx-background-color: lightblue;");
 
         Scene scene = new Scene(pane, 1500, 1000, Color.WHITESMOKE);
         stage.setScene(scene);
-        for (Ship ship : ships) {
-            double seconds = ship.getSec();
-            Timeline timelineADD = new Timeline(new KeyFrame(Duration.seconds(seconds), event -> ship.addCircle()));
-            timelineADD.setCycleCount(Timeline.INDEFINITE);
-            timelineADD.play();
-        }
 
+        double seconds = ship.getSec();
+        Timeline timelineADD = new Timeline(new KeyFrame(Duration.seconds(seconds), event -> ship.addCircle()));
+        timelineADD.setCycleCount(Timeline.INDEFINITE);
+        timelineADD.play();
+
+        int TimeForFish =6;
         for(ImageView fish : fishes) {
-            Timeline timelineFish = new Timeline(new KeyFrame(Duration.seconds(5), event -> fishEats(ships, fish)));
+            Timeline timelineFish = new Timeline(new KeyFrame(Duration.seconds(TimeForFish), event -> fishEats(ships, fish)));
             timelineFish.setCycleCount(Timeline.INDEFINITE);
             timelineFish.play();
+            TimeForFish -=2;
         }
 
         stage.setTitle("Shipy-ship");
@@ -87,7 +83,7 @@ public class ShopApp extends Application {
                 System.out.println(startTranslateX + " " +startTranslateY);
                 System.out.println(targetTranslateX + " " + targetTranslateY);
 
-                TranslateTransition moveToFood = new TranslateTransition(Duration.seconds(2), fish);
+                TranslateTransition moveToFood = new TranslateTransition(Duration.seconds(0.1), fish);
                 moveToFood.setToX(targetTranslateX);
                 moveToFood.setToY(targetTranslateY);
 
@@ -99,7 +95,7 @@ public class ShopApp extends Application {
                     }
                 });
 
-                TranslateTransition moveBack = new TranslateTransition(Duration.seconds(1), fish);
+                TranslateTransition moveBack = new TranslateTransition(Duration.seconds(0.1), fish);
                 moveBack.setToX(startTranslateX);
                 moveBack.setToY(startTranslateY);
 

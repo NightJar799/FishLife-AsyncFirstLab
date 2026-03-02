@@ -1,13 +1,8 @@
 package org.example.firstlabasyncshop;
 
-import javafx.geometry.Orientation;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Ship {
     private VBox vBox;
