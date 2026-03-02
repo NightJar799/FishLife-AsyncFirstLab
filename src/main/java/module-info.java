@@ -11,9 +11,8 @@ module org.example.firstlabasyncshop {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires javafx.graphics;
+    requires javafx.base;
 
     opens org.example.firstlabasyncshop to javafx.fxml;
     exports org.example.firstlabasyncshop;
-//    exports org.example.firstlabasyncshop.ref;
-//    opens org.example.firstlabasyncshop.ref to javafx.fxml;
 }

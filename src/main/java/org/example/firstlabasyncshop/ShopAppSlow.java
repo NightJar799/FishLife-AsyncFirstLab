@@ -16,7 +16,7 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopApp extends Application {
+public class ShopAppSlow extends Application {
     private double fishY = 500;
     private double fishXOne = 260;
     private double fishXTwo = 660;
@@ -45,9 +45,9 @@ public class ShopApp extends Application {
         stage.setScene(scene);
 
         double seconds = ship.getSec();
-        Timeline timelineADD = new Timeline(new KeyFrame(Duration.seconds(seconds), event -> ship.addCircle()));
-        timelineADD.setCycleCount(Timeline.INDEFINITE);
-        timelineADD.play();
+        Timeline timelineADD1 = new Timeline(new KeyFrame(Duration.seconds(seconds), event -> ship.addCircle()));
+        timelineADD1.setCycleCount(Timeline.INDEFINITE);
+        timelineADD1.play();
 
         int TimeForFish =6;
         for(ImageView fish : fishes) {

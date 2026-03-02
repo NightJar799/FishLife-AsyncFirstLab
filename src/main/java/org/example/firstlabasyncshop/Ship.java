@@ -20,7 +20,7 @@ public class Ship {
         this.busy = busy;
     }
 
-    public Ship(double XImg, double YImg, double XBox, int sec){
+    public Ship(double XImg, double YImg, double XBox, double sec){
         this.sec = sec;
         image = new Image(getClass().getResourceAsStream("/img.png"));
         imageView = new ImageView(image);

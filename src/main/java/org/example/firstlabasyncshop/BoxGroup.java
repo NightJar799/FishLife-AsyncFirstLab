@@ -5,8 +5,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.util.Random;
+
 public class BoxGroup {
-    private static final int MAXAMMOUNT = 5;
+    private static final int MAXAMMOUNT = 15;
     private static final int MINAMMOUNT = 0;
     private int createTime;
     private int capacity = 0;
@@ -43,9 +45,6 @@ public class BoxGroup {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
 
     public HBox getGroup() {
         return group;
