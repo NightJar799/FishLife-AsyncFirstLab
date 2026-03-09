@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShopAppSlow extends Application {
-    private double fishY = 500;
+    private double fishY = 600;
     private double fishXOne = 260;
     private double fishXTwo = 660;
     private double fishXThree = 1060;
@@ -79,7 +79,7 @@ public class ShopAppSlow extends Application {
                 double startTranslateY = fish.getTranslateY();
 
                 double targetTranslateX = -(fish.getX() - ship.getVBoxX() - 50);
-                double targetTranslateY = -(fish.getY() - ship.getVBoxY() - 250);
+                double targetTranslateY = -(fish.getY() - ship.getVBoxY() - 350);
                 System.out.println(startTranslateX + " " +startTranslateY);
                 System.out.println(targetTranslateX + " " + targetTranslateY);
 

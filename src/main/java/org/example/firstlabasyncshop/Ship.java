@@ -5,6 +5,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class Ship {
     private VBox vBox;
     private Image image;
@@ -19,10 +21,12 @@ public class Ship {
         imageView.setFitHeight(YImg);
         imageView.setFitWidth(XImg);
 
-        HBox food = boxGroup.getGroup();
+        List<HBox> food = boxGroup.getGroup();
         vBox = new VBox();
         vBox.getChildren().add(imageView);
-        vBox.getChildren().add(food);
+        vBox.getChildren().add(food.get(0));
+        vBox.getChildren().add(food.get(1));
+        vBox.getChildren().add(food.get(2));
         vBox.setSpacing(30);
         vBox.setLayoutX(XBox);
         vBox.setLayoutY(50);
