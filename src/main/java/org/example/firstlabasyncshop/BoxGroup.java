@@ -1,6 +1,5 @@
 package org.example.firstlabasyncshop;
 
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -16,7 +15,6 @@ public class BoxGroup {
     private HBox groupFirst;
     private HBox groupSecond;
     private HBox groupThird;
-    private Node last;
     private Image image = new Image(getClass().getResourceAsStream("/sweet.png"));
     public BoxGroup () {
         groupFirst = new HBox();

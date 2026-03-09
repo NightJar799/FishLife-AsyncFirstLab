@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Path;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -18,22 +19,21 @@ import java.util.List;
 
 public class ShopAppFast extends Application {
     private double fishY = 600;
-    private double fishXOne = 260;
-    private double fishXTwo = 660;
-    private double fishXThree = 1060;
+    private double fishXOne = 100;
+    private double fishXTwo = 500;
+    private double fishXThree = 900;
     @Override
     public void start(Stage stage) {
         Ship ship = new Ship(230, 150, 600, 2);
-        Image image = new Image(getClass().getResourceAsStream("/ryba.png"));
 
-        ImageView fishOne = createFish(fishXOne, image);
-        ImageView fishTwo = createFish(fishXTwo, image);
-        ImageView fishThree = createFish(fishXThree, image);
+        Path fishOne = createFish(fishXOne, Color.RED, Color.DARKRED);
+        Path fishTwo = createFish(fishXTwo, Color.GREEN, Color.DARKGREEN);
+        Path fishThree = createFish(fishXThree, Color.BLUE, Color.DARKBLUE);
 
         List<Ship> ships = new ArrayList<>();
         ships.add(ship);
 
-        List<ImageView> fishes = new ArrayList<>();
+        List<Path> fishes = new ArrayList<>();
         fishes.add(fishOne);
         fishes.add(fishTwo);
         fishes.add(fishThree);
@@ -56,7 +56,7 @@ public class ShopAppFast extends Application {
         timelineADD3.play();
 
         int TimeForFish =6;
-        for(ImageView fish : fishes) {
+        for(Path fish : fishes) {
             Timeline timelineFish = new Timeline(new KeyFrame(Duration.seconds(TimeForFish), event -> fishEats(ships, fish)));
             timelineFish.setCycleCount(Timeline.INDEFINITE);
             timelineFish.play();
@@ -67,16 +67,12 @@ public class ShopAppFast extends Application {
         stage.show();
     }
 
-    private ImageView createFish(double x, Image image) {
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(200);
-        imageView.setFitHeight(100);
-        imageView.setX(x);
-        imageView.setY(fishY);
-        return imageView;
+    private Path createFish(double x, Color in, Color out) {
+        Fish fish = new Fish(in, out, x, fishY);
+        return fish.getFish();
     }
 
-    private void fishEats(List<Ship> ships, ImageView fish) {
+    private void fishEats(List<Ship> ships, Path fish) {
         for (Ship ship : ships) {
             if (ship.getBoxes() > 0 && !ship.isBusy()) {
                 ship.setBusy(true);
@@ -84,8 +80,8 @@ public class ShopAppFast extends Application {
                 double startTranslateX = fish.getTranslateX();
                 double startTranslateY = fish.getTranslateY();
 
-                double targetTranslateX = -(fish.getX() - ship.getVBoxX() - 50);
-                double targetTranslateY = -(fish.getY() - ship.getVBoxY() - 350);
+                double targetTranslateX = -(fish.getLayoutX() - ship.getVBoxX() - 50);
+                double targetTranslateY = -(fish.getLayoutY() - ship.getVBoxY() - 350);
                 System.out.println(startTranslateX + " " +startTranslateY);
                 System.out.println(targetTranslateX + " " + targetTranslateY);
 
