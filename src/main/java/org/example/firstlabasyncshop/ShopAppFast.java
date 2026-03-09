@@ -1,8 +1,6 @@
 package org.example.firstlabasyncshop;
 
-import javafx.animation.KeyFrame;
 import javafx.animation.SequentialTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -15,14 +13,19 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ShopAppFast extends Application {
     private double fishY = 600;
     private double fishXOne = 100;
     private double fishXTwo = 500;
     private double fishXThree = 900;
-    private volatile boolean runningFirstFish = true;
     private volatile boolean addingFlag = true;
+
+    private AtomicBoolean fishOneBusy = new AtomicBoolean(false);
+    private AtomicBoolean fishTwoBusy = new AtomicBoolean(false);
+    private AtomicBoolean fishThreeBusy = new AtomicBoolean(false);
+
     @Override
     public void start(Stage stage) {
         Ship ship = new Ship(230, 150, 600, 0.5);
@@ -34,11 +37,6 @@ public class ShopAppFast extends Application {
         List<Ship> ships = new ArrayList<>();
         ships.add(ship);
 
-        List<Path> fishes = new ArrayList<>();
-        fishes.add(fishOne);
-        fishes.add(fishTwo);
-        fishes.add(fishThree);
-
         Pane pane = new Pane(ship.getTilePane(), fishOne, fishTwo, fishThree);
         pane.setStyle("-fx-background-color: lightblue;");
 
@@ -46,7 +44,12 @@ public class ShopAppFast extends Application {
         stage.setScene(scene);
 
         startNewFoodCreation(ships);
-        startFishEatsThread(fishOne, ships);
+        startNewFoodCreation(ships);
+        startNewFoodCreation(ships);
+
+        startFishEatsThread(fishOne, ships, fishOneBusy, 2);
+        startFishEatsThread(fishTwo, ships, fishTwoBusy, 3);
+        startFishEatsThread(fishThree, ships, fishThreeBusy, 4);
 
         stage.setTitle("Shipy-ship");
         stage.show();
@@ -54,85 +57,54 @@ public class ShopAppFast extends Application {
 
     public void startNewFoodCreation(List<Ship> ships) {
         addingFlag = true;
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), event -> {
-                    Platform.runLater(() -> {
-                        //Создание коробки анимация
-                    });
-                })
-        );
-        timeline.setCycleCount(Timeline.INDEFINITE); // Бесконечное повторение
 
         Thread workerThread = new Thread(() -> {
             while (addingFlag) {
                 try {
                     Platform.runLater(() -> {
                         Ship ship = ships.getFirst();
-                        if (ship.getBoxes() < 15) {  // Добавить проверку
+                        if (ship.getBoxes() < 15) {
                             try {
                                 ship.addCircle();
                             } catch (Exception e) {
-                                System.out.println("Error: " + e.getMessage());
+                                System.out.println("Error adding box: " + e.getMessage());
                             }
                         }
                     });
-
                     Thread.sleep(1000);
-
                 } catch (InterruptedException e) {
-                    System.out.println("Thread interrupted");
+                    System.out.println("Food creator thread interrupted");
                     break;
                 }
             }
-            System.out.println("Worker creater thread finished");
+            System.out.println("Food creator thread finished");
         });
-
         workerThread.setDaemon(true);
-
-        timeline.play();
         workerThread.start();
     }
 
-    public void startFishEatsThread(Path fish, List<Ship> ships) {
-        runningFirstFish = true;
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(2), event -> {
-                    Platform.runLater(() -> {
-                        fishEats(ships, fish);
-                    });
-                })
-        );
-        timeline.setCycleCount(Timeline.INDEFINITE); // Бесконечное повторение
-
+    public void startFishEatsThread(Path fish, List<Ship> ships, AtomicBoolean fishBusyFlag, int sec) {
         Thread workerThread = new Thread(() -> {
-            while (runningFirstFish) {
+            while (addingFlag) {
                 try {
+                    Thread.sleep(1000 * sec);
 
-                    Platform.runLater(() -> {
-                        Ship ship = ships.getFirst();
-                        if (ship.getBoxes() > 0) {  // Добавить проверку
-                            try {
-                                ship.deleteCircle();
-                            } catch (Exception e) {
-                                System.out.println("Error: " + e.getMessage());
+                    if (!fishBusyFlag.get()) {
+                        Platform.runLater(() -> {
+                            Ship ship = ships.getFirst();
+                            if (ship.getBoxes() > 0 && ship.reserveBox()) {
+                                fishEats(ships, fish, fishBusyFlag);
                             }
-                        }
-                    });
-
-                    Thread.sleep(2000);
-
+                        });
+                    }
                 } catch (InterruptedException e) {
-                    System.out.println("Thread interrupted");
+                    System.out.println("Fish thread interrupted");
                     break;
                 }
             }
-            System.out.println("Worker thread finished");
+            System.out.println("Fish thread finished");
         });
-
         workerThread.setDaemon(true);
-
-        timeline.play();
         workerThread.start();
     }
 
@@ -141,34 +113,44 @@ public class ShopAppFast extends Application {
         return fish.getFish();
     }
 
-    private void fishEats(List<Ship> ships, Path fish) {
-        for (Ship ship : ships) {
-            if (ship.getBoxes() > 0 && !ship.isBusy()) {
-                ship.setBusy(true);
+    private void fishEats(List<Ship> ships, Path fish, AtomicBoolean fishBusyFlag) {
+        Ship ship = ships.getFirst();
 
-                double startTranslateX = fish.getTranslateX();
-                double startTranslateY = fish.getTranslateY();
+        fishBusyFlag.set(true);
 
-                double targetTranslateX = -(fish.getLayoutX() - ship.getVBoxX() - 50);
-                double targetTranslateY = -(fish.getLayoutY() - ship.getVBoxY() - 350);
-                System.out.println(startTranslateX + " " +startTranslateY);
-                System.out.println(targetTranslateX + " " + targetTranslateY);
+        try {
+            double startTranslateX = fish.getTranslateX();
+            double startTranslateY = fish.getTranslateY();
 
-                TranslateTransition moveToFood = new TranslateTransition(Duration.seconds(0.5), fish);
-                moveToFood.setToX(targetTranslateX);
-                moveToFood.setToY(targetTranslateY);
+            double targetTranslateX = -(fish.getLayoutX() - ship.getVBoxX() - 50);
+            double targetTranslateY = -(fish.getLayoutY() - ship.getVBoxY() - 350);
 
-                TranslateTransition moveBack = new TranslateTransition(Duration.seconds(0.5), fish);
-                moveBack.setToX(startTranslateX);
-                moveBack.setToY(startTranslateY);
+            TranslateTransition moveToFood = new TranslateTransition(Duration.seconds(0.5), fish);
+            moveToFood.setToX(targetTranslateX);
+            moveToFood.setToY(targetTranslateY);
 
-                SequentialTransition sequentialTransition = new SequentialTransition(moveToFood, moveBack);
-                sequentialTransition.play();
-                sequentialTransition.setOnFinished(event -> {
-                    ship.setBusy(false);
-                });
-                break;
-            }
+            TranslateTransition moveBack = new TranslateTransition(Duration.seconds(0.5), fish);
+            moveBack.setToX(startTranslateX);
+            moveBack.setToY(startTranslateY);
+
+            SequentialTransition sequentialTransition = new SequentialTransition(moveToFood, moveBack);
+
+            sequentialTransition.setOnFinished(event -> {
+                ship.confirmDeleteReservedBox();
+                fishBusyFlag.set(false);
+            });
+
+            sequentialTransition.play();
+
+        } catch (Exception e) {
+            System.out.println("Error in fishEats: " + e.getMessage());
+            ship.cancelReservation();
+            fishBusyFlag.set(false);
         }
+    }
+
+    @Override
+    public void stop() {
+        addingFlag = false;
     }
 }

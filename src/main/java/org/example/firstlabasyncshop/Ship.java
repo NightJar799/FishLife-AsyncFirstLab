@@ -6,13 +6,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Ship {
     private VBox vBox;
     private Image image;
     private BoxGroup boxGroup = new BoxGroup();
     private double sec;
-    private boolean busy = false;
+    private AtomicBoolean busy = new AtomicBoolean(false);
+    private AtomicInteger reservedBoxes = new AtomicInteger(0);
 
     public Ship(double XImg, double YImg, double XBox, double sec){
         this.sec = sec;
@@ -33,11 +36,11 @@ public class Ship {
     }
 
     public boolean isBusy() {
-        return busy;
+        return busy.get();
     }
 
     public void setBusy(boolean busy) {
-        this.busy = busy;
+        this.busy.set(busy);
     }
 
     public VBox getTilePane() {
@@ -50,6 +53,31 @@ public class Ship {
 
     public synchronized void deleteCircle() {
         boxGroup.delBox();
+    }
+
+    public synchronized boolean reserveBox() {
+        if (getAvailableBoxes() > 0) {
+            reservedBoxes.incrementAndGet();
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized void confirmDeleteReservedBox() {
+        if (reservedBoxes.get() > 0) {
+            boxGroup.delBox();
+            reservedBoxes.decrementAndGet();
+        }
+    }
+
+    public synchronized void cancelReservation() {
+        if (reservedBoxes.get() > 0) {
+            reservedBoxes.decrementAndGet();
+        }
+    }
+
+    public int getAvailableBoxes() {
+        return boxGroup.getCapacity() - reservedBoxes.get();
     }
 
     public int getBoxes() {
