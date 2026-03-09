@@ -1,5 +1,6 @@
 package org.example.firstlabasyncshop;
 
+import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -33,6 +34,10 @@ public class ShopAppFast extends Application {
         Path fishOne = createFish(fishXOne, Color.RED, Color.DARKRED);
         Path fishTwo = createFish(fishXTwo, Color.GREEN, Color.DARKGREEN);
         Path fishThree = createFish(fishXThree, Color.BLUE, Color.DARKBLUE);
+
+        fishOne.setRotate(-90);
+        fishTwo.setRotate(-90);
+        fishThree.setRotate(-90);
 
         List<Ship> ships = new ArrayList<>();
         ships.add(ship);
@@ -121,9 +126,13 @@ public class ShopAppFast extends Application {
         try {
             double startTranslateX = fish.getTranslateX();
             double startTranslateY = fish.getTranslateY();
+            double startRotate = fish.getRotate();
 
             double targetTranslateX = -(fish.getLayoutX() - ship.getVBoxX() - 50);
             double targetTranslateY = -(fish.getLayoutY() - ship.getVBoxY() - 350);
+
+            RotateTransition rotateToNormal = new RotateTransition(Duration.seconds(0.3), fish);
+            rotateToNormal.setToAngle(0);
 
             TranslateTransition moveToFood = new TranslateTransition(Duration.seconds(0.5), fish);
             moveToFood.setToX(targetTranslateX);
@@ -133,7 +142,15 @@ public class ShopAppFast extends Application {
             moveBack.setToX(startTranslateX);
             moveBack.setToY(startTranslateY);
 
-            SequentialTransition sequentialTransition = new SequentialTransition(moveToFood, moveBack);
+            RotateTransition rotateBack = new RotateTransition(Duration.seconds(0.3), fish);
+            rotateBack.setToAngle(-90);
+
+            SequentialTransition sequentialTransition = new SequentialTransition(
+                    rotateToNormal,
+                    moveToFood,
+                    moveBack,
+                    rotateBack
+            );
 
             sequentialTransition.setOnFinished(event -> {
                 ship.confirmDeleteReservedBox();
@@ -144,6 +161,7 @@ public class ShopAppFast extends Application {
 
         } catch (Exception e) {
             System.out.println("Error in fishEats: " + e.getMessage());
+            fish.setRotate(-90);
             ship.cancelReservation();
             fishBusyFlag.set(false);
         }
