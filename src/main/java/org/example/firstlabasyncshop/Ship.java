@@ -2,15 +2,31 @@ package org.example.firstlabasyncshop;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class Ship {
     private VBox vBox;
     private Image image;
-    private ImageView imageView;
-    private BoxGroup boxGroup;
+    private BoxGroup boxGroup = new BoxGroup();
     private double sec;
     private boolean busy = false;
+
+    public Ship(double XImg, double YImg, double XBox, double sec){
+        this.sec = sec;
+        image = new Image(getClass().getResourceAsStream("/ship.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(YImg);
+        imageView.setFitWidth(XImg);
+
+        HBox food = boxGroup.getGroup();
+        vBox = new VBox();
+        vBox.getChildren().add(imageView);
+        vBox.getChildren().add(food);
+        vBox.setSpacing(30);
+        vBox.setLayoutX(XBox);
+        vBox.setLayoutY(50);
+    }
 
     public boolean isBusy() {
         return busy;
@@ -18,22 +34,6 @@ public class Ship {
 
     public void setBusy(boolean busy) {
         this.busy = busy;
-    }
-
-    public Ship(double XImg, double YImg, double XBox, double sec){
-        this.sec = sec;
-        image = new Image(getClass().getResourceAsStream("/img.png"));
-        imageView = new ImageView(image);
-        imageView.setFitHeight(YImg);
-        imageView.setFitWidth(XImg);
-
-        boxGroup = new BoxGroup(5);
-        vBox = new VBox();
-        vBox.getChildren().add(imageView);
-        vBox.getChildren().add(boxGroup.getGroup());
-        vBox.setSpacing(30);
-        vBox.setLayoutX(XBox);
-        vBox.setLayoutY(50);
     }
 
     public VBox getTilePane() {
@@ -62,9 +62,5 @@ public class Ship {
 
     public double getSec() {
         return sec;
-    }
-
-    public void setSec(double sec) {
-        this.sec = sec;
     }
 }

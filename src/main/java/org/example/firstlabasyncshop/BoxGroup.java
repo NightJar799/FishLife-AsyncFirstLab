@@ -5,18 +5,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-import java.util.Random;
 
 public class BoxGroup {
     private static final int MAXAMMOUNT = 15;
     private static final int MINAMMOUNT = 0;
-    private int createTime;
     private int capacity = 0;
     private HBox group;
     private Node last;
     private Image image = new Image(getClass().getResourceAsStream("/sweet.png"));
-    public BoxGroup (int createTime) {
-        this.createTime = createTime;
+    public BoxGroup () {
         group = new HBox();
     }
     public void AddBox(){
@@ -48,13 +45,5 @@ public class BoxGroup {
 
     public HBox getGroup() {
         return group;
-    }
-
-    public int getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(int createTime) {
-        this.createTime = createTime;
     }
 }
