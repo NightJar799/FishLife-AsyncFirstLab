@@ -21,7 +21,7 @@ public class BoxGroup {
         groupSecond = new HBox();
         groupThird = new HBox();
     }
-    public void AddBox(){
+    public synchronized void AddBox(){
         if (capacity < MAXAMMOUNT) {
             ImageView sweet = new ImageView(image);
             sweet.setFitHeight(50);
@@ -40,14 +40,14 @@ public class BoxGroup {
             capacity++;
         }
     }
-    public void delBox(){
+    public synchronized void delBox(){
         if (capacity != MINAMMOUNT) {
-            if (capacity < 5) {
-                groupFirst.getChildren().remove(capacity);
-            } else if (capacity < 10) {
-                groupSecond.getChildren().remove(capacity - 5);
+            if (capacity < 6) {
+                groupFirst.getChildren().remove(capacity - 1);
+            } else if (capacity < 11) {
+                groupSecond.getChildren().remove(capacity - 5 - 1);
             } else {
-                groupSecond.getChildren().remove(capacity - 10);
+                groupSecond.getChildren().remove(capacity - 10 - 1);
             }
             capacity--;
         } else {

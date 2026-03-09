@@ -44,11 +44,11 @@ public class Ship {
         return vBox;
     }
 
-    public void addCircle() {
+    public synchronized void addCircle() {
         boxGroup.AddBox();
     }
 
-    public void deleteCircle() {
+    public synchronized void deleteCircle() {
         boxGroup.delBox();
     }
 
