@@ -42,10 +42,10 @@ public class ShopAppFast extends Application {
         List<Ship> ships = new ArrayList<>();
         ships.add(ship);
 
-        Pane pane = new Pane(ship.getTilePane(), fishOne, fishTwo, fishThree);
-        pane.setStyle("-fx-background-color: lightblue;");
+        Pane root = new Pane(ship.getTilePane(), fishOne, fishTwo, fishThree);
+        root.setStyle("-fx-background-color: lightblue;");
 
-        Scene scene = new Scene(pane, 1500, 1000, Color.WHITESMOKE);
+        Scene scene = new Scene(root, 1500, 1000, Color.WHITESMOKE);
         stage.setScene(scene);
 
         startNewFoodCreation(ships);
@@ -70,7 +70,7 @@ public class ShopAppFast extends Application {
                         Ship ship = ships.getFirst();
                         if (ship.getBoxes() < 15) {
                             try {
-                                ship.addCircle();
+                                ship.addFood();
                             } catch (Exception e) {
                                 System.out.println("Error adding box: " + e.getMessage());
                             }

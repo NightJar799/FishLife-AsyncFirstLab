@@ -6,7 +6,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Ship {
@@ -14,7 +13,6 @@ public class Ship {
     private Image image;
     private BoxGroup boxGroup = new BoxGroup();
     private double sec;
-    private AtomicBoolean busy = new AtomicBoolean(false);
     private AtomicInteger reservedBoxes = new AtomicInteger(0);
 
     public Ship(double XImg, double YImg, double XBox, double sec){
@@ -35,23 +33,15 @@ public class Ship {
         vBox.setLayoutY(50);
     }
 
-    public boolean isBusy() {
-        return busy.get();
-    }
-
-    public void setBusy(boolean busy) {
-        this.busy.set(busy);
-    }
-
     public VBox getTilePane() {
         return vBox;
     }
 
-    public synchronized void addCircle() {
+    public synchronized void addFood() {
         boxGroup.AddBox();
     }
 
-    public synchronized void deleteCircle() {
+    public synchronized void deleteFood() {
         boxGroup.delBox();
     }
 
